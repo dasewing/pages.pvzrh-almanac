@@ -1,0 +1,446 @@
+<!DOCTYPE html><html lang=zh><head><meta charset=utf-8>
+<script>(function(){var d=document.documentElement;var t=null,l=null;try{t=localStorage.getItem('pvzrh_theme');l=localStorage.getItem('pvzrh_lang')}catch(e){}if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.dataset.theme=t;d.dataset.lang=l||'zh';})();</script>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>PvZ RH Plant Almanac · PvZ RH 真·植物图鉴</title>
+<style>
+:root{ color-scheme:light dark; --bg:#f6f6f3;--card:#fff;--tx:#222;--sub:#888;--acc:#3a8a3a;--cost:#c33;--in:#fdf6e6;--out:#e6f5fb;--evo:#f0e6f9;--route:#e6f5e6;--route2:#fef6e6;--arrow:#bbb;}
+:root[data-theme="dark"]{--bg:#1a1a1c;--card:#2a2a2c;--tx:#eee;--sub:#aaa;--acc:#7ec97e;--cost:#f55;--in:#3a2c1a;--out:#1c2e3a;--evo:#2a1f3a;--route:#1f3a1f;--route2:#3a2a1c;--arrow:#555;}
+body{margin:0;padding:1rem;background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;}
+header{position:sticky;top:0;background:var(--bg);padding:.5rem 0 .8rem;z-index:20;border-bottom:1px solid rgba(127,127,127,.18);margin-bottom:1rem;}
+h1{margin:0;}
+.titlebar{display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;}
+.themebtn{padding:.4rem .65rem;border:1px solid #ccc;border-radius:8px;background:var(--card);color:var(--tx);cursor:pointer;font-size:.95rem;line-height:1;min-width:2.6rem;text-align:center;}
+.themebtn:hover{border-color:var(--acc);}
+.btnbar{display:flex;gap:.4rem;align-items:center;}
+.nav{margin:.3rem 0 .2rem;font-size:.9rem;}
+.nav a{color:var(--acc);text-decoration:none;margin-right:.5rem;}
+.nav a.active{font-weight:700;}
+/* language-conditional show/hide. Children with .zh-only / .en-only respect data-lang. */
+:root[data-lang="en"] .zh-only,:root[data-lang="zh"] .en-only{display:none !important;}
+.meta{color:var(--sub);font-size:.9rem;margin:.4rem 0;}
+.controls{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-top:.4rem;}
+input[type=search]{padding:.55rem .9rem;border:1px solid #ccc;border-radius:8px;font-size:1rem;flex:1;min-width:220px;max-width:380px;background:var(--card);color:var(--tx);}
+.viewbtns{display:inline-flex;border:1px solid #ccc;border-radius:8px;overflow:hidden;}
+.viewbtns button{padding:.5rem .85rem;border:none;background:var(--card);color:var(--tx);cursor:pointer;font-size:.85rem;border-right:1px solid #ccc;}
+.viewbtns button:last-child{border-right:none;}
+.viewbtns button.on{background:var(--acc);color:#fff;font-weight:600;}
+.toggle{padding:.5rem .85rem;border:1px solid #ccc;border-radius:8px;background:var(--card);color:var(--tx);cursor:pointer;font-size:.85rem;white-space:nowrap;}
+.toggle.on{background:var(--acc);color:#fff;border-color:var(--acc);font-weight:600;}
+.loading{padding:2rem;text-align:center;color:var(--sub);}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;}
+.card{background:var(--card);border-radius:14px;padding:.9rem;display:flex;gap:.85rem;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+.card .img-wrap{flex:0 0 110px;display:flex;align-items:center;justify-content:center;background:rgba(127,127,127,.08);border-radius:8px;height:130px;}
+.card img{max-width:106px;max-height:126px;object-fit:contain;image-rendering:pixelated;}
+.card .body{flex:1;min-width:0;font-size:.85rem;line-height:1.5;}
+.card .name{font-size:1.05rem;font-weight:700;margin:0 0 .15rem;}
+.card .name .en{color:var(--sub);font-size:.78rem;font-weight:500;margin-left:.35rem;}
+.card .seed{color:var(--sub);font-size:.72rem;}
+.card .stats{display:flex;flex-wrap:wrap;gap:.25rem .8rem;margin:.4rem 0 .35rem;font-size:.78rem;}
+.card .stats span{color:var(--sub);} .card .stats b{color:var(--acc);font-weight:600;}
+.card .cost{color:var(--cost);font-size:.78rem;margin:0 0 .25rem;}
+.card .info{color:var(--tx);margin:.2rem 0;font-size:.78rem;}
+.card .intro{color:var(--sub);font-size:.74rem;font-style:italic;line-height:1.45;margin-top:.3rem;border-left:2px solid rgba(127,127,127,.18);padding-left:.5rem;}
+.no-img{color:var(--sub);font-size:.7rem;text-align:center;}
+body[data-hideimgless="1"] .card.noimg{display:none !important;}
+body[data-view="row"] .grid{grid-template-columns:1fr;gap:6px;}
+body[data-view="row"] .card{padding:.45rem .7rem;align-items:center;gap:.6rem;border-radius:8px;}
+body[data-view="row"] .card .img-wrap{flex:0 0 56px;height:56px;border-radius:6px;}
+body[data-view="row"] .card img{max-width:52px;max-height:52px;}
+body[data-view="row"] .card .body{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;line-height:1.3;}
+body[data-view="row"] .card .name{font-size:.95rem;margin:0;flex:0 0 auto;min-width:130px;}
+body[data-view="row"] .card .name .en{margin-left:.25rem;}
+body[data-view="row"] .card .seed,body[data-view="row"] .card .stats,body[data-view="row"] .card .cost{flex:0 0 auto;margin:0;}
+body[data-view="row"] .card .info,body[data-view="row"] .card .intro{flex:1 1 100%;width:100%;font-size:.75rem;margin:.15rem 0 0;}
+body[data-view="row"] .card .intro{padding-left:.4rem;}
+body[data-view="mini"] .grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;}
+body[data-view="mini"] .card{flex-direction:column;padding:.5rem .35rem;gap:.3rem;align-items:center;text-align:center;border-radius:10px;}
+body[data-view="mini"] .card .img-wrap{flex:0 0 auto;width:100%;height:90px;}
+body[data-view="mini"] .card img{max-width:84px;max-height:84px;}
+body[data-view="mini"] .card .body{font-size:.78rem;line-height:1.2;width:100%;}
+body[data-view="mini"] .card .name{font-size:.8rem;margin:0;font-weight:600;}
+body[data-view="mini"] .card .name .en{display:block;margin-left:0;font-size:.68rem;font-weight:400;}
+body[data-view="mini"] .card .seed,body[data-view="mini"] .card .stats,body[data-view="mini"] .card .cost,body[data-view="mini"] .card .info,body[data-view="mini"] .card .intro{display:none;}
+
+/* ====== line-art mode — SVG filter on every plant image ====== */
+body.lineart .card img{filter:url(#pvzrh-lineart);}
+/* html2canvas (v1.4) ignores filter:url() so PNG export uses a runtime
+   Sobel canvas pass instead — see exportpng handler. The CSS rule above
+   applies in print + screen preview. */
+
+/* ====== A4 print layout — also drives html2canvas PNG export via .printing class ====== */
+@media print { @page { size:A4; margin:8mm; } }
+@media print, .printing { /* nothing — placeholder so :is selector below works */ }
+@media print {
+  body { background:white !important; padding:0 !important; color:#000 !important; }
+  header, .controls, .meta, .nav, .titlebar > button { display:none !important; }
+  .grid { display:grid !important; grid-template-columns:repeat(7, 1fr) !important; gap:3mm !important; }
+  .card, body[data-view] .card { background:white !important; box-shadow:none !important; border:1px solid #ddd !important; padding:2mm 1mm !important; gap:1mm !important; flex-direction:column !important; align-items:center !important; text-align:center !important; page-break-inside:avoid; break-inside:avoid; }
+  .card .img-wrap, body[data-view] .card .img-wrap { width:100% !important; height:22mm !important; flex:0 0 auto !important; background:transparent !important; }
+  .card img, body[data-view] .card img { max-width:20mm !important; max-height:20mm !important; }
+  .card .body, body[data-view] .card .body { width:100% !important; font-size:8pt !important; }
+  .card .name, body[data-view] .card .name { font-size:8pt !important; line-height:1.15 !important; font-weight:700 !important; margin:.5mm 0 0 !important; }
+  .card .name .en, body[data-view] .card .name .en { display:block !important; font-size:6.8pt !important; color:#666 !important; margin-left:0 !important; font-weight:400 !important; }
+  .card .seed, .card .stats, .card .cost, .card .info, .card .intro { display:none !important; }
+  .card.noimg { display:none !important; }   /* always hide no-image cards in print */
+}
+/* same rules duplicated for screen capture (html2canvas) — triggered by body.printing */
+body.printing { background:white; padding:0; color:#000; }
+body.printing header, body.printing .controls, body.printing .meta, body.printing .nav { display:none !important; }
+body.printing .grid { display:grid !important; grid-template-columns:repeat(7, 1fr) !important; gap:3mm !important; padding:8mm; background:white; }
+body.printing .card { background:white !important; box-shadow:none !important; border:1px solid #ddd !important; padding:2mm 1mm !important; gap:1mm !important; flex-direction:column !important; align-items:center !important; text-align:center !important; }
+body.printing .card .img-wrap { width:100% !important; height:22mm !important; flex:0 0 auto !important; background:transparent !important; }
+body.printing .card img { max-width:20mm !important; max-height:20mm !important; }
+body.printing .card .body { width:100% !important; font-size:8pt !important; }
+body.printing .card .name { font-size:8pt !important; line-height:1.15 !important; font-weight:700 !important; margin:.5mm 0 0 !important; }
+body.printing .card .name .en { display:block !important; font-size:6.8pt !important; color:#666 !important; margin-left:0 !important; font-weight:400 !important; }
+body.printing .card .seed, body.printing .card .stats, body.printing .card .cost, body.printing .card .info, body.printing .card .intro { display:none !important; }
+body.printing .card.noimg { display:none !important; }
+
+</style></head><body>
+<header><div class=titlebar><h1><span class=zh-only>📖 PvZ RH 真·植物图鉴</span><span class=en-only>📖 PvZ RH Plant Almanac</span></h1>
+<div class=btnbar>
+<button id=langtoggle class=themebtn title="Switch language / 切换语言"><span class=zh-only>EN</span><span class=en-only>中</span></button>
+<button id=themetoggle class=themebtn title="切换 浅色 / 深色 / Toggle theme">🌓</button>
+</div></div>
+<div class=nav><span class=zh-only><a href="plant_almanac_pro.html" class=active>📖 真·植物图鉴</a><a href="plant_fusion.html">🧬 进化路线</a><a href="plant_fusion_full.html">🔗 完整融合表</a></span><span class=en-only><a href="plant_almanac_pro.html" class=active>📖 Plant Almanac</a><a href="plant_fusion.html">🧬 Evolution Routes</a><a href="plant_fusion_full.html">🔗 Fusion Catalog</a></span></div>
+<div class=meta id=meta></div>
+<div class=controls id=controls></div>
+</header>
+<div id=root class=loading>加载中…</div>
+<script>document.getElementById('themetoggle').addEventListener('click',function(){var r=document.documentElement;var cur=r.dataset.theme==='dark'?'light':'dark';r.dataset.theme=cur;try{localStorage.setItem('pvzrh_theme',cur)}catch(e){}});
+document.getElementById('langtoggle')&&document.getElementById('langtoggle').addEventListener('click',function(){var r=document.documentElement;var cur=r.dataset.lang==='en'?'zh':'en';r.dataset.lang=cur;try{localStorage.setItem('pvzrh_lang',cur)}catch(e){}window.dispatchEvent(new CustomEvent('pvzrh:langchange',{detail:cur}));this.textContent=cur==='en'?'EN':'中';});</script>
+
+<script src="data/plants.js"></script>
+<script>
+const esc = s => String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const VIEW_KEY='pvzrh_almanac_view', HIDE_KEY='pvzrh_almanac_hideimgless';
+
+// i18n strings for this page (used for dynamic / template content;
+// static button text uses .zh-only / .en-only spans so :root[data-lang]
+// switches them with no re-render).
+const I18N = {
+  zh: { meta: (n,m,d)=>`共 <b>${n}</b> 株植物 · <b>${d}</b> 已译 · <b>${m}</b> 暂无图`,
+        ph: '搜索中文名/英文名/seedType…',
+        seed: '种子类型', hp: '生命', dmg: '伤害', atk: '攻速', sun: '产阳光',
+        noimg: '(无图)' },
+  en: { meta: (n,m,d)=>`<b>${n}</b> plants · <b>${d}</b> translated · <b>${m}</b> without image`,
+        ph: 'search name / enum / seedType…',
+        seed: 'seedType', hp: 'HP', dmg: 'DMG', atk: 'Atk', sun: 'Sun',
+        noimg: '(no image)' },
+};
+function L(){ return I18N[document.documentElement.dataset.lang==='en'?'en':'zh']; }
+
+(function(){
+ try {
+  const {plants} = window.PVZRH_PLANTS;
+  const root=document.getElementById('root');
+  root.classList.remove('loading');
+  const meta=document.getElementById('meta');
+  const noimg=plants.filter(p=>!p.img).length;
+  const translated=plants.filter(p=>p.name_en).length;
+  function refreshMeta(){ meta.innerHTML=L().meta(plants.length, noimg, translated); }
+  refreshMeta();
+
+  // controls — use zh-only / en-only spans so language toggles via CSS without re-binding handlers
+  const controls=document.getElementById('controls');
+  controls.innerHTML=`<input id=q type=search>
+<div class=viewbtns>
+ <button data-v="grid" class=on><span class=zh-only>卡片</span><span class=en-only>Cards</span></button>
+ <button data-v="row"><span class=zh-only>单行</span><span class=en-only>Rows</span></button>
+ <button data-v="mini"><span class=zh-only>极简</span><span class=en-only>Mini</span></button>
+</div>
+<button id=hideimgless class=toggle>
+ <span class=zh-only>🚫 隐藏无图(${noimg})</span><span class=en-only>🚫 Hide no-img (${noimg})</span>
+</button>
+<button id=lineart class=toggle>
+ <span class=zh-only>🖋 线稿</span><span class=en-only>🖋 Line art</span>
+</button>
+<button id=printpdf class=toggle>
+ <span class=zh-only>🖨 打印 / PDF</span><span class=en-only>🖨 Print / PDF</span>
+</button>
+<button id=exportpng class=toggle>
+ <span class=zh-only>🖼 导出 PNG</span><span class=en-only>🖼 Export PNG</span>
+</button>
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+ <defs>
+  <filter id="pvzrh-lineart" color-interpolation-filters="sRGB" x="0%" y="0%" width="100%" height="100%">
+   <feColorMatrix type="matrix" values=".33 .33 .33 0 0  .33 .33 .33 0 0  .33 .33 .33 0 0  0 0 0 1 0"/>
+   <feGaussianBlur stdDeviation="0.4"/>
+   <feConvolveMatrix order="3" kernelMatrix="-1 -1 -1 -1 8 -1 -1 -1 -1" preserveAlpha="true"/>
+   <feColorMatrix type="matrix" values="-1 0 0 0 1  0 -1 0 0 1  0 0 -1 0 1  0 0 0 1 0"/>
+   <feComponentTransfer>
+    <feFuncR type="gamma" amplitude="1" exponent="2.4" offset="0"/>
+    <feFuncG type="gamma" amplitude="1" exponent="2.4" offset="0"/>
+    <feFuncB type="gamma" amplitude="1" exponent="2.4" offset="0"/>
+   </feComponentTransfer>
+  </filter>
+ </defs>
+</svg>`;
+
+  // build cards (re-renders on language change because field choice differs)
+  const grid=document.createElement('div');
+  grid.className='grid';
+  function buildCards(){
+    const t=L(); const en = document.documentElement.dataset.lang==='en';
+    const frags=[];
+    for(const p of plants){
+      // pick fields per language with graceful fallback
+      const nm   = en ? (p.name_en || p.enum || ('#'+p.seed))
+                      : (p.name_zh || p.enum || ('#'+p.seed));
+      const sub  = en ? (p.name_zh || '') : (p.enum && p.enum!==nm ? p.enum : '');
+      const intro= en ? (p.introduce_en || p.introduce || '') : (p.introduce || '');
+      const info = en ? (p.info_en      || p.info      || '') : (p.info      || '');
+      const cost = en ? (p.cost_en      || p.cost      || '') : (p.cost      || '');
+      const search = `${p.name_zh||''} ${p.name_en||''} ${p.enum||''} ${p.seed}`.toLowerCase();
+      const cls = p.img ? 'card' : 'card noimg';
+      let stats='';
+      if(p.stats){
+        const c=[];
+        if(p.stats.hp && p.stats.hp!=='0') c.push(`<span>${t.hp}:</span><b>${esc(p.stats.hp)}</b>`);
+        if(p.stats.damage && p.stats.damage!=='0') c.push(`<span>${t.dmg}:</span><b>${esc(p.stats.damage)}</b>`);
+        if(p.stats.attack_interval && !['0','0.0'].includes(p.stats.attack_interval)) c.push(`<span>${t.atk}:</span><b>${esc(p.stats.attack_interval)}s</b>`);
+        if(p.stats.produce_interval && !['0','0.0'].includes(p.stats.produce_interval)) c.push(`<span>${t.sun}:</span><b>${esc(p.stats.produce_interval)}s</b>`);
+        if(c.length) stats=`<div class=stats>${c.join('')}</div>`;
+      }
+      const img = p.img ? `<img loading=lazy src="${esc(p.img)}" alt="${esc(p.enum)}">` : `<div class=no-img>${esc(t.noimg)}</div>`;
+      frags.push(`<div class="${cls}" data-s="${esc(search)}">
+<div class=img-wrap>${img}</div>
+<div class=body>
+<div class=name>${esc(nm)}<span class=en>${esc(sub)}</span></div>
+<div class=seed>${t.seed} #${p.seed}</div>
+${stats}
+${cost ? `<div class=cost>${cost}</div>` : ''}
+${info ? `<div class=info>${info}</div>` : ''}
+${intro ? `<div class=intro>${intro}</div>` : ''}
+</div></div>`);
+    }
+    grid.innerHTML=frags.join('');
+  }
+  buildCards();
+  if(root.parentNode) root.replaceWith(grid);
+
+  // search placeholder (the only thing we have to manage in JS — buttons use zh-only/en-only spans)
+  const qEl = document.getElementById('q');
+  function applyLang(){
+    refreshMeta();
+    qEl.placeholder = L().ph;
+    buildCards();
+    // re-apply current search filter
+    qEl.dispatchEvent(new Event('input'));
+  }
+  applyLang();
+  window.addEventListener('pvzrh:langchange', applyLang);
+
+  // search
+  document.getElementById('q').addEventListener('input', e=>{
+    const q=e.target.value.toLowerCase().trim();
+    for(const c of grid.querySelectorAll('.card'))
+      c.style.display = (!q || c.dataset.s.includes(q)) ? '' : 'none';
+  });
+  // view buttons
+  function setView(v){
+    document.body.dataset.view=v;
+    document.querySelectorAll('.viewbtns button').forEach(b=>b.classList.toggle('on', b.dataset.v===v));
+    try{ localStorage.setItem(VIEW_KEY, v); }catch(e){}
+  }
+  function setHide(on){
+    document.body.dataset.hideimgless = on?'1':'0';
+    document.getElementById('hideimgless').classList.toggle('on', on);
+    try{ localStorage.setItem(HIDE_KEY, on?'1':'0'); }catch(e){}
+  }
+  let savedView='grid', savedHide='0';
+  try{ savedView=localStorage.getItem(VIEW_KEY)||'grid'; savedHide=localStorage.getItem(HIDE_KEY)||'0'; }catch(e){}
+  setView(savedView); setHide(savedHide==='1');
+  document.querySelectorAll('.viewbtns button').forEach(b=>b.addEventListener('click', ()=>setView(b.dataset.v)));
+  document.getElementById('hideimgless').addEventListener('click', ()=>setHide(document.body.dataset.hideimgless!=='1'));
+
+  // line-art toggle
+  const LINEART_KEY='pvzrh_almanac_lineart';
+  function setLineart(on){
+    document.body.classList.toggle('lineart', on);
+    document.getElementById('lineart').classList.toggle('on', on);
+    try{ localStorage.setItem(LINEART_KEY, on?'1':'0'); }catch(e){}
+  }
+  let savedLineart='0';
+  try{ savedLineart=localStorage.getItem(LINEART_KEY)||'0'; }catch(e){}
+  setLineart(savedLineart==='1');
+  document.getElementById('lineart').addEventListener('click',
+    ()=>setLineart(!document.body.classList.contains('lineart')));
+
+  // print → user saves as PDF from browser dialog (line-art via SVG filter is auto)
+  document.getElementById('printpdf').addEventListener('click', ()=>{
+    window.print();
+  });
+
+  // ----- Pre-fetch each image as data: URL, so canvas reads stay same-origin -----
+  // Without this, Chrome/Edge taint the html2canvas output and toBlob() throws.
+  async function imgToDataUrl(src){
+    const r = await fetch(src);
+    if(!r.ok) throw new Error('HTTP '+r.status+' '+src);
+    const b = await r.blob();
+    return await new Promise((res, rej)=>{
+      const fr = new FileReader();
+      fr.onload = ()=>res(fr.result);
+      fr.onerror = ()=>rej(fr.error);
+      fr.readAsDataURL(b);
+    });
+  }
+
+  // ----- Sobel pass for PNG line-art (html2canvas can't render SVG filter:url) -----
+  function applySobelToImg(img){
+    return new Promise((resolve, reject)=>{
+      const finish = (src)=>{
+        const c=document.createElement('canvas');
+        c.width=img.naturalWidth||img.width; c.height=img.naturalHeight||img.height;
+        const ctx=c.getContext('2d');
+        ctx.drawImage(src, 0, 0, c.width, c.height);
+        let imd;
+        try { imd = ctx.getImageData(0,0,c.width,c.height); }
+        catch(e){ reject(e); return; }
+        const d = imd.data, w = c.width, h = c.height;
+        // grayscale into a flat float array
+        const g = new Float32Array(w*h);
+        for(let i=0,j=0;i<d.length;i+=4,j++){
+          if(d[i+3]<8){ g[j]=255; continue; }    // transparent → white background
+          g[j] = 0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2];
+        }
+        // Sobel
+        const out = new Uint8ClampedArray(w*h*4);
+        for(let y=1;y<h-1;y++){
+          for(let x=1;x<w-1;x++){
+            const i=y*w+x;
+            const gx = -g[i-w-1] + g[i-w+1]
+                       -2*g[i-1] + 2*g[i+1]
+                       - g[i+w-1] + g[i+w+1];
+            const gy = -g[i-w-1] - 2*g[i-w] - g[i-w+1]
+                       + g[i+w-1] + 2*g[i+w] + g[i+w+1];
+            const m = Math.sqrt(gx*gx + gy*gy);
+            // invert to dark-on-white, gamma 2.0
+            let v = 255 - Math.min(255, Math.pow(m/255, 0.55) * 280);
+            const o = i*4;
+            out[o]=v; out[o+1]=v; out[o+2]=v; out[o+3]=255;
+          }
+        }
+        ctx.putImageData(new ImageData(out, w, h), 0, 0);
+        resolve(c.toDataURL('image/png'));
+      };
+      if(img.complete && img.naturalWidth){ finish(img); }
+      else { const im=new Image(); im.crossOrigin='anonymous'; im.onload=()=>finish(im); im.onerror=reject; im.src=img.src; }
+    });
+  }
+
+  // PNG export via html2canvas (lazy-load lib so it doesn't slow first paint)
+  function loadHtml2Canvas(){
+    if(window.html2canvas) return Promise.resolve();
+    return new Promise((res, rej)=>{
+      const s = document.createElement('script');
+      s.src = 'lib/html2canvas.min.js';
+      s.onload = res;
+      s.onerror = ()=>rej(new Error('加载 lib/html2canvas.min.js 失败'));
+      document.head.appendChild(s);
+    });
+  }
+  document.getElementById('exportpng').addEventListener('click', async ()=>{
+    try { await loadHtml2Canvas(); }
+    catch(e){ alert(e.message); return; }
+    const lineartOn = document.body.classList.contains('lineart');
+    const imgs = Array.from(grid.querySelectorAll('.card img'))
+                       .filter(img => img.offsetParent !== null);
+    const restorations = [];
+
+    // Show a status note while we pre-fetch
+    const note = document.createElement('div');
+    note.style.cssText = 'position:fixed;top:0;left:0;right:0;padding:.6rem;background:#3a8a3a;color:#fff;text-align:center;z-index:10000;font-size:.9rem';
+    note.textContent = '准备 PNG 导出…';
+    document.body.appendChild(note);
+    const setNote = t => note.textContent = t;
+    const dropNote = ()=>{ if(note.parentNode) note.parentNode.removeChild(note); };
+
+    try {
+      // Phase 1: ensure every visible image's src is a data: URL so the
+      // resulting html2canvas canvas isn't cross-origin-tainted.
+      let done = 0;
+      for(const img of imgs){
+        if(!img._dataUrl){
+          try {
+            img._dataUrl = await imgToDataUrl(img.src);
+          } catch(e){
+            // Surface a useful, actionable hint and bail.
+            dropNote();
+            const onFile = location.protocol === 'file:';
+            alert('PNG 导出失败:浏览器拒绝读取本地图片('+e.message+')。\n\n'
+                + (onFile
+                    ? '原因:你直接用 file:// 打开了页面,Chrome/Edge 会把每个文件视为不同的来源,禁止 canvas 读取。\n\n建议:\n  1) 改用「🖨 打印 / PDF」(浏览器原生打印不受这个限制)\n  2) 或在 public/ 目录下运行 HTTP 服务器:\n        cd public/\n        python3 -m http.server 8000\n     再访问 http://localhost:8000/'
+                    : '请检查图片路径是否可访问 / 服务器是否正确响应。'));
+            return;
+          }
+        }
+        if(img.src !== img._dataUrl){
+          restorations.push([img, img.src]);
+          img.src = img._dataUrl;
+        }
+        done++;
+        if(done % 50 === 0) setNote(`准备 PNG 导出… ${done}/${imgs.length}`);
+      }
+      // wait for new src to actually decode
+      await Promise.all(imgs.map(img => img.complete ? null : new Promise(r=>{img.onload=r;img.onerror=r;})));
+
+      // Phase 2: optional Sobel line-art (now safe — data: URLs are same-origin)
+      if(lineartOn){
+        setNote('生成线稿…');
+        for(let i=0;i<imgs.length;i++){
+          const img=imgs[i];
+          if(!img._lineartUrl){
+            try { img._lineartUrl = await applySobelToImg(img); }
+            catch(e){ /* skip */ continue; }
+          }
+          if(img.src !== img._lineartUrl){
+            restorations.push([img, img._dataUrl || img.src]);
+            img.src = img._lineartUrl;
+          }
+          if((i+1) % 50 === 0) setNote(`生成线稿… ${i+1}/${imgs.length}`);
+        }
+        await Promise.all(imgs.map(img => img.complete ? null : new Promise(r=>{img.onload=r;img.onerror=r;})));
+      }
+
+      // Phase 3: capture
+      setNote('正在合成 PNG…');
+      document.body.classList.add('printing');
+      const canvas = await html2canvas(grid, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        useCORS: true,
+        windowWidth: 794,
+        logging: false,
+      });
+      document.body.classList.remove('printing');
+
+      await new Promise(res=>{
+        canvas.toBlob(blob=>{
+          const a = document.createElement('a');
+          a.download = lineartOn ? 'pvzrh_almanac_A4_lineart.png' : 'pvzrh_almanac_A4.png';
+          a.href = URL.createObjectURL(blob);
+          a.click();
+          setTimeout(()=>URL.revokeObjectURL(a.href), 30000);
+          res();
+        }, 'image/png');
+      });
+      setNote('已下载 ' + (lineartOn ? 'pvzrh_almanac_A4_lineart.png' : 'pvzrh_almanac_A4.png'));
+      setTimeout(dropNote, 1500);
+    } catch(err) {
+      document.body.classList.remove('printing');
+      dropNote();
+      alert('PNG 导出失败: '+err.message);
+    } finally {
+      // restore original src so the page returns to its original state
+      for(const [img, src] of restorations){ img.src = src; }
+    }
+  });
+
+ } catch(e) {
+  document.getElementById('root').innerHTML='<div style="color:#c33">加载 data/plants.js 失败:'+esc(e.message)+'</div>';
+ }
+})();
+</script>
+</body></html>

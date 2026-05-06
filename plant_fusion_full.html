@@ -1,0 +1,201 @@
+<!DOCTYPE html><html lang=zh><head><meta charset=utf-8>
+<script>(function(){var d=document.documentElement;var t=null,l=null;try{t=localStorage.getItem('pvzrh_theme');l=localStorage.getItem('pvzrh_lang')}catch(e){}if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.dataset.theme=t;d.dataset.lang=l||'zh';})();</script>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>PvZ RH Fusion Catalog · PvZ RH 完整融合配方表</title>
+<style>
+:root{ color-scheme:light dark; --bg:#f6f6f3;--card:#fff;--tx:#222;--sub:#888;--acc:#3a8a3a;--cost:#c33;--in:#fdf6e6;--out:#e6f5fb;--evo:#f0e6f9;--route:#e6f5e6;--route2:#fef6e6;--arrow:#bbb;}
+:root[data-theme="dark"]{--bg:#1a1a1c;--card:#2a2a2c;--tx:#eee;--sub:#aaa;--acc:#7ec97e;--cost:#f55;--in:#3a2c1a;--out:#1c2e3a;--evo:#2a1f3a;--route:#1f3a1f;--route2:#3a2a1c;--arrow:#555;}
+body{margin:0;padding:1rem;background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;}
+header{position:sticky;top:0;background:var(--bg);padding:.5rem 0 .8rem;z-index:20;border-bottom:1px solid rgba(127,127,127,.18);margin-bottom:1rem;}
+h1{margin:0;}
+.titlebar{display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;}
+.themebtn{padding:.4rem .65rem;border:1px solid #ccc;border-radius:8px;background:var(--card);color:var(--tx);cursor:pointer;font-size:.95rem;line-height:1;min-width:2.6rem;text-align:center;}
+.themebtn:hover{border-color:var(--acc);}
+.btnbar{display:flex;gap:.4rem;align-items:center;}
+.nav{margin:.3rem 0 .2rem;font-size:.9rem;}
+.nav a{color:var(--acc);text-decoration:none;margin-right:.5rem;}
+.nav a.active{font-weight:700;}
+/* language-conditional show/hide. Children with .zh-only / .en-only respect data-lang. */
+:root[data-lang="en"] .zh-only,:root[data-lang="zh"] .en-only{display:none !important;}
+.meta{color:var(--sub);font-size:.9rem;margin:.4rem 0;}
+.controls{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-top:.4rem;}
+input[type=search]{padding:.55rem .9rem;border:1px solid #ccc;border-radius:8px;font-size:1rem;flex:1;min-width:220px;max-width:380px;background:var(--card);color:var(--tx);}
+.viewbtns{display:inline-flex;border:1px solid #ccc;border-radius:8px;overflow:hidden;}
+.viewbtns button{padding:.5rem .85rem;border:none;background:var(--card);color:var(--tx);cursor:pointer;font-size:.85rem;border-right:1px solid #ccc;}
+.viewbtns button:last-child{border-right:none;}
+.viewbtns button.on{background:var(--acc);color:#fff;font-weight:600;}
+.toggle{padding:.5rem .85rem;border:1px solid #ccc;border-radius:8px;background:var(--card);color:var(--tx);cursor:pointer;font-size:.85rem;white-space:nowrap;}
+.toggle.on{background:var(--acc);color:#fff;border-color:var(--acc);font-weight:600;}
+.loading{padding:2rem;text-align:center;color:var(--sub);}
+
+h2{margin:1.2rem 0 .5rem;}
+.section{background:var(--card);border-radius:14px;padding:.85rem 1rem;margin:.7rem 0;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.section h3{margin:0 0 .4rem;display:flex;align-items:center;gap:.5rem;font-size:1.05rem;}
+.section h3 img{width:100px;height:100px;object-fit:contain;background:rgba(127,127,127,.08);border-radius:6px;padding:2px;image-rendering:pixelated;}
+.section h3 .zh{color:var(--sub);font-weight:500;font-size:.85rem;}
+.section h3 .stat{margin-left:auto;font-size:.7rem;color:var(--sub);font-weight:400;}
+.block{margin-top:.45rem;padding:.5rem .6rem;border-radius:8px;}
+.block.in{background:var(--in);} .block.out{background:var(--out);} .block.evo{background:var(--evo);}
+.block .hd{font-size:.78rem;color:var(--sub);margin-bottom:.3rem;}
+.recipes{display:flex;flex-wrap:wrap;gap:.4rem;}
+.r{display:inline-flex;align-items:center;gap:.2rem;background:rgba(127,127,127,.08);border-radius:6px;padding:.18rem .35rem;font-size:.78rem;}
+.r img{width:22px;height:22px;object-fit:contain;image-rendering:pixelated;}
+.r a{color:var(--tx);text-decoration:none;} .r a:hover{text-decoration:underline;}
+.r .op{color:var(--sub);}
+.block.in .recipes,.block.out .recipes{flex-direction:column;flex-wrap:nowrap;gap:.45rem;}
+.block.in .recipes > .r,.block.out .recipes > .r{width:100%;padding:.4rem .55rem;font-size:.95rem;align-items:center;flex-wrap:wrap;}
+.block.out .recipes img,.block.in .recipes img{width:50px;height:50px;}
+.evo-list{display:flex;flex-wrap:wrap;gap:.3rem;font-size:.8rem;}
+.evo-tag{background:rgba(127,127,127,.1);border-radius:6px;padding:.2rem .45rem;}
+.evo-tag b{color:var(--acc);}
+
+</style></head><body>
+<header><div class=titlebar><h1><span class=zh-only>🔗 PvZ RH 完整融合配方表</span><span class=en-only>🔗 PvZ RH Fusion Catalog</span></h1>
+<div class=btnbar>
+<button id=langtoggle class=themebtn title="Switch language / 切换语言"><span class=zh-only>EN</span><span class=en-only>中</span></button>
+<button id=themetoggle class=themebtn title="切换 浅色 / 深色 / Toggle theme">🌓</button>
+</div></div>
+<div class=nav><span class=zh-only><a href="plant_almanac_pro.html">📖 真·植物图鉴</a><a href="plant_fusion.html">🧬 进化路线</a><a href="plant_fusion_full.html" class=active>🔗 完整融合表</a></span><span class=en-only><a href="plant_almanac_pro.html">📖 Plant Almanac</a><a href="plant_fusion.html">🧬 Evolution Routes</a><a href="plant_fusion_full.html" class=active>🔗 Fusion Catalog</a></span></div>
+<div class=meta id=meta></div>
+<div class=controls id=controls></div>
+</header>
+<div id=root class=loading>加载中…</div>
+<script>document.getElementById('themetoggle').addEventListener('click',function(){var r=document.documentElement;var cur=r.dataset.theme==='dark'?'light':'dark';r.dataset.theme=cur;try{localStorage.setItem('pvzrh_theme',cur)}catch(e){}});
+document.getElementById('langtoggle')&&document.getElementById('langtoggle').addEventListener('click',function(){var r=document.documentElement;var cur=r.dataset.lang==='en'?'zh':'en';r.dataset.lang=cur;try{localStorage.setItem('pvzrh_lang',cur)}catch(e){}window.dispatchEvent(new CustomEvent('pvzrh:langchange',{detail:cur}));this.textContent=cur==='en'?'EN':'中';});</script>
+
+<script src="data/fusion.js"></script>
+<script>
+const esc = s => String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const anchor = s => s.replace(/[^A-Za-z0-9_]/g,'_');
+
+function isEN(){ return document.documentElement.dataset.lang==='en'; }
+function altName(n,name){ if(!n) return ''; const en=n.name_en||'', zh=n.name_zh||''; return isEN() ? zh : en; }
+function pickName(n,name){ if(!n) return name; return isEN() ? (n.name_en||n.name_zh||name) : (n.name_zh||n.name_en||name); }
+const I18N_FF={
+  zh:{ meta:(n,e)=>`共 <b>${n}</b> 株植物 · <b>${e}</b> 条配方`,
+       ph:'搜索植物名(中/英)…',
+       inHd:'⬆ 由这些配方合成', outHd:'⬇ 与下列植物配对可合成', evoHd:'🧬 进化路线身份',
+       basesH:n=>`🌱 基础植物 (${n})`, derivedH:n=>`🧪 融合产物 (${n})`,
+       atk:'伤', hp:'血', stage:'第' /* "第 i/n 阶段" */, stageEnd:'阶段' },
+  en:{ meta:(n,e)=>`<b>${n}</b> plants · <b>${e}</b> recipes`,
+       ph:'search plant name (EN/中)…',
+       inHd:'⬆ Made from', outHd:'⬇ Pair with these to make', evoHd:'🧬 Evolution membership',
+       basesH:n=>`🌱 Base plants (${n})`, derivedH:n=>`🧪 Fused (${n})`,
+       atk:'DMG', hp:'HP', stage:'stage', stageEnd:'' },
+};
+function L(){ return I18N_FF[isEN()?'en':'zh']; }
+
+(function(){
+ try {
+  const {nodes, edges} = window.PVZRH_FUSION;
+  document.getElementById('root').classList.remove('loading');
+  // build adjacency
+  const inMap = {}, outMap = {};
+  for(const e of edges){
+    (inMap[e.c] = inMap[e.c]||[]).push([e.a,e.b]);
+    (outMap[e.a] = outMap[e.a]||[]).push([e.b,e.c]);
+    if(e.a !== e.b) (outMap[e.b] = outMap[e.b]||[]).push([e.a,e.c]);
+  }
+  const allPlants = Object.keys(nodes).sort((a,b)=>a.toLowerCase().localeCompare(b.toLowerCase()));
+  const bases   = allPlants.filter(p=>!inMap[p]);
+  const derived = allPlants.filter(p=> inMap[p]);
+
+  const meta=document.getElementById('meta');
+  function refreshMeta(){ meta.innerHTML = L().meta(allPlants.length, edges.length); }
+
+  // search
+  document.getElementById('controls').innerHTML =
+    '<input id=q type=search>';
+  function refreshSearchPh(){ document.getElementById('q').placeholder = L().ph; }
+
+  function chip(name){
+    const n=nodes[name]||{};
+    const im = n.img ? `<img loading=lazy src="${esc(n.img)}" alt="${esc(name)}">` : '';
+    const dispName = pickName(n, name);
+    const sub = isEN() ? (n.name_zh||'') : '';
+    const subHtml = sub && sub!==dispName ? `<span class=op> · </span>${esc(sub)}` : '';
+    const enLine = !isEN() && n.name_zh && n.name_zh!==name ? `<span class=op> · </span>${esc(n.name_zh)}` : '';
+    return `<span class=r>${im}<a href="#p-${anchor(name)}">${esc(dispName)}${(isEN()?subHtml:enLine)}</a></span>`;
+  }
+
+  function plantSection(p){
+    const t = L();
+    const n=nodes[p]||{};
+    const dispName = pickName(n, p);
+    const altSub = isEN() ? (n.name_zh||'') : '';   // when EN active, show ZH as side info
+    const im = n.img ? `<img src="${esc(n.img)}" alt="${esc(p)}">` : '';
+    const ins = inMap[p]||[];
+    const outs = outMap[p]||[];
+    const ev = n.evo||[];
+    const stat = [];
+    if(ins.length)  stat.push(`⬆${ins.length}`);
+    if(outs.length) stat.push(`⬇${outs.length}`);
+    if(ev.length)   stat.push(`🧬${ev.length}`);
+
+    const inHtml = ins.length ? `<div class="block in"><div class=hd>${t.inHd}</div><div class=recipes>${
+      ins.sort().map(([a,b])=>`<span class=r>${chip(a)}<span class=op>+</span>${chip(b)}<span class=op>=</span></span>`).join('')
+    }</div></div>` : '';
+
+    let outHtml='';
+    if(outs.length){
+      const byPartner={};
+      for(const [partner,prod] of outs){ (byPartner[partner]=byPartner[partner]||[]).push(prod); }
+      const list = Object.keys(byPartner).sort().map(partner=>
+        Array.from(new Set(byPartner[partner])).sort().map(prod=>
+          `<span class=r><span class=op>+</span>${chip(partner)}<span class=op>=</span>${chip(prod)}</span>`
+        ).join('')
+      ).join('');
+      outHtml = `<div class="block out"><div class=hd>${t.outHd}</div><div class=recipes>${list}</div></div>`;
+    }
+
+    let evoHtml='';
+    if(ev.length){
+      evoHtml = `<div class="block evo"><div class=hd>${t.evoHd}</div><div class=evo-list>${
+        ev.map(er=>{
+          const baseNode = nodes[er.base]||{};
+          const bdisp = pickName(baseNode, er.base);
+          const stats = [];
+          if(er.atk) stats.push(`${t.atk}<b>${er.atk}</b>`);
+          if(er.hp)  stats.push(`${t.hp}<b>${er.hp}</b>`);
+          const stagePart = isEN()
+            ? `${t.stage} <b>${er.i+1}/${er.n}</b>`
+            : `${t.stage} <b>${er.i+1}/${er.n}</b> ${t.stageEnd}`;
+          return `<span class=evo-tag><a href="#p-${anchor(er.base)}" style="color:inherit;text-decoration:none">${esc(bdisp)}</a> · ${esc(er.route)} · ${stagePart} · ${stats.join(' · ')}</span>`;
+        }).join('')
+      }</div></div>`;
+    }
+
+    const search = `${p} ${n.name_zh||''} ${n.name_en||''}`.toLowerCase();
+    const subHtml = altSub && altSub!==dispName ? `<span class=zh>· ${esc(altSub)}</span>` : (!isEN() && n.name_zh && n.name_zh!==p ? '' : '');
+    return `<section class=section id="p-${anchor(p)}" data-s="${esc(search)}">
+<h3>${im}<span>${esc(p)}</span>${dispName!==p ? `<span class=zh>· ${esc(dispName)}</span>` : ''}${stat.length?`<span class=stat>${stat.join(' / ')}</span>`:''}</h3>
+${inHtml}${outHtml}${evoHtml}
+</section>`;
+  }
+
+  const root = document.getElementById('root');
+  let container;
+  function render(){
+    const t=L();
+    const html = (bases.length ? `<h2>${t.basesH(bases.length)}</h2>${bases.map(plantSection).join('')}` : '')
+               + (derived.length ? `<h2>${t.derivedH(derived.length)}</h2>${derived.map(plantSection).join('')}` : '');
+    if(container){ container.innerHTML = html; }
+    else { container = document.createElement('div'); container.innerHTML = html; root.replaceWith(container); }
+    // re-apply current search (querySelector lookup is fresh each call)
+    const qEl = document.getElementById('q'); if(qEl) qEl.dispatchEvent(new Event('input'));
+  }
+  refreshMeta(); refreshSearchPh(); render();
+
+  document.getElementById('q').addEventListener('input', e=>{
+    const q=e.target.value.toLowerCase().trim();
+    for(const c of document.querySelectorAll('.section'))
+      c.style.display = (!q || c.dataset.s.includes(q)) ? '' : 'none';
+  });
+
+  window.addEventListener('pvzrh:langchange', ()=>{ refreshMeta(); refreshSearchPh(); render(); });
+ } catch(e) {
+  document.getElementById('root').innerHTML='<div style="color:#c33">加载 data/fusion.js 失败:'+esc(e.message)+'</div>';
+ }
+})();
+</script>
+</body></html>
