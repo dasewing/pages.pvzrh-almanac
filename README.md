@@ -8,4 +8,4 @@ All data was automatically extracted from `data.unity3d` + `GameAssembly.dll` + 
 Source repository: [link](#)
 
 数据全部从 `data.unity3d` + `GameAssembly.dll` + IL2CPP 元数据自动提取。
-源仓库:[link](#)
+源仓库：[link](#)
