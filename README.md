@@ -1,8 +1,11 @@
-# PvZ Hybrid 数据展示
+# Plants vs. Zombies Fusion Database / 植物大战僵尸融合版 数据图鉴
 
-- [📖 真·植物图鉴](plant_almanac_pro.html)
-- [🧬 进化路线](plant_fusion.html)
-- [🔗 完整融合表](plant_fusion_full.html)
+- [Plant Almanac / 植物图鉴](plant_almanac_pro.html)
+- [Evolutionary Path / 进化路线](plant_fusion.html)
+- [Fusion Table / 融合表](plant_fusion_full.html)
+
+All data was automatically extracted from `data.unity3d` + `GameAssembly.dll` + IL2CPP metadata.
+Source repository: [link](#)
 
 数据全部从 `data.unity3d` + `GameAssembly.dll` + IL2CPP 元数据自动提取。
 源仓库:[link](#)
