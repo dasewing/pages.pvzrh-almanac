@@ -47,6 +47,8 @@ input[type=search]{padding:.55rem .9rem;border:1px solid #ccc;border-radius:8px;
 .card .intro{color:var(--sub);font-size:.74rem;font-style:italic;line-height:1.45;margin-top:.3rem;border-left:2px solid rgba(127,127,127,.18);padding-left:.5rem;}
 .no-img{color:var(--sub);font-size:.7rem;text-align:center;}
 body[data-hideimgless="1"] .card.noimg{display:none !important;}
+/* tiny-subject filter — default ON */
+body[data-hidetiny="1"] .card.tinyimg{display:none !important;}
 .card.is-v37new{outline:2px solid rgba(58,138,58,.4);outline-offset:-2px;}
 .card .img-wrap{position:relative;}
 .card .badges{position:absolute;top:.25rem;left:.25rem;right:.25rem;display:flex;flex-direction:column;align-items:flex-start;gap:.18rem;pointer-events:none;}
@@ -177,6 +179,9 @@ function L(){ return I18N[document.documentElement.dataset.lang==='en'?'en':'zh'
 <button id=hideimgless class=toggle>
  <span class=zh-only>🚫 隐藏无图(${noimg})</span><span class=en-only>🚫 Hide no-img (${noimg})</span>
 </button>
+<button id=hidetiny class=toggle title="隐藏 bbox 小于 80px 的图(默认开)">
+ <span class=zh-only>🔬 隐藏小图(${plants.filter(p=>p.tiny_img).length})</span><span class=en-only>🔬 Hide tiny (${plants.filter(p=>p.tiny_img).length})</span>
+</button>
 <button id=onlyv37 class=toggle title="${`Only v3.7 new (${plants.filter(p=>p.v37_new).length}) / 仅 v3.7 新植物`}">
  v3.7
 </button>
@@ -229,7 +234,7 @@ function L(){ return I18N[document.documentElement.dataset.lang==='en'?'en':'zh'
       const info = en ? (p.info_en      || p.info      || '') : (p.info      || '');
       const cost = en ? (p.cost_en      || p.cost      || '') : (p.cost      || '');
       const search = `${p.name_zh||''} ${p.name_en||''} ${p.enum||''} ${p.seed}`.toLowerCase();
-      const cls = p.img ? 'card' : 'card noimg';
+      const cls = (p.img ? 'card' : 'card noimg') + (p.tiny_img ? ' tinyimg' : '');
       let stats='';
       if(p.stats){
         const c=[];
@@ -308,6 +313,19 @@ ${intro ? `<div class=intro>${intro}</div>` : ''}
   setView(savedView); setHide(savedHide==='1');
   document.querySelectorAll('.viewbtns button').forEach(b=>b.addEventListener('click', ()=>setView(b.dataset.v)));
   document.getElementById('hideimgless').addEventListener('click', ()=>setHide(document.body.dataset.hideimgless!=='1'));
+
+  // hide-tiny toggle — default ON (we measure bbox at build time and mark .tinyimg cards)
+  const TINY_KEY='pvzrh_almanac_hidetiny';
+  function setHideTiny(on){
+    document.body.dataset.hidetiny = on?'1':'0';
+    const b=document.getElementById('hidetiny'); if(b) b.classList.toggle('on', on);
+    try{ localStorage.setItem(TINY_KEY, on?'1':'0'); }catch(e){}
+  }
+  let savedHideTiny='1';   // default on
+  try{ const v=localStorage.getItem(TINY_KEY); if(v!==null) savedHideTiny=v; }catch(e){}
+  setHideTiny(savedHideTiny==='1');
+  const hideTinyBtn = document.getElementById('hidetiny');
+  if (hideTinyBtn) hideTinyBtn.addEventListener('click', ()=>setHideTiny(document.body.dataset.hidetiny!=='1'));
 
   // v3.7-only filter
   const V37_KEY='pvzrh_almanac_only_v37';
