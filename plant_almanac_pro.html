@@ -173,8 +173,8 @@ function L(){ return I18N[document.documentElement.dataset.lang==='en'?'en':'zh'
 <button id=hideimgless class=toggle>
  <span class=zh-only>🚫 隐藏无图(${noimg})</span><span class=en-only>🚫 Hide no-img (${noimg})</span>
 </button>
-<button id=onlyv37 class=toggle>
- <span class=zh-only>✨ 仅 v3.7 新植物(${plants.filter(p=>p.v37_new).length})</span><span class=en-only>✨ Only v3.7 new (${plants.filter(p=>p.v37_new).length})</span>
+<button id=onlyv37 class=toggle title="${`Only v3.7 new (${plants.filter(p=>p.v37_new).length}) / 仅 v3.7 新植物`}">
+ v3.7
 </button>
 <button id=selectmode class=toggle>
  <span class=zh-only>☑ 多选模式</span><span class=en-only>☑ Select mode</span>
@@ -236,9 +236,9 @@ function L(){ return I18N[document.documentElement.dataset.lang==='en'?'en':'zh'
         if(c.length) stats=`<div class=stats>${c.join('')}</div>`;
       }
       const img = p.img ? `<img loading=lazy src="${esc(p.img)}" alt="${esc(p.enum)}">` : `<div class=no-img>${esc(t.noimg)}</div>`;
-      // v3.7 changelog badges
+      // v3.7 changelog badges — "v37new" badge intentionally suppressed (the
+      // green card outline + the toggle's filter button already mark them).
       const badges = [];
-      if (p.v37_new) badges.push(`<span class="badge v37new" title="${en?'New in v3.7':'v3.7 新增'}">v3.7 NEW</span>`);
       if (p.v37_renamed_from) badges.push(`<span class="badge v37rename" title="${en?'Renamed in v3.7':'v3.7 重命名'}">↻ ${esc(p.v37_renamed_from)}</span>`);
       if (p.v37_stat_changes) {
         const parts = Object.entries(p.v37_stat_changes).map(([k,v])=>`${k}:${v[0]}→${v[1]}`).join(' · ');
