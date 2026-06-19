@@ -43,6 +43,14 @@ input[type=search]{padding:.55rem .9rem;border:1px solid #ccc;border-radius:8px;
 .card .intro{color:var(--sub);font-size:.74rem;font-style:italic;line-height:1.45;margin-top:.3rem;border-left:2px solid rgba(127,127,127,.18);padding-left:.5rem;}
 .no-img{color:var(--sub);font-size:.7rem;text-align:center;}
 body[data-hideimgless="1"] .card.noimg{display:none !important;}
+.card.is-v37new{outline:2px solid rgba(58,138,58,.4);outline-offset:-2px;}
+.card .img-wrap{position:relative;}
+.card .badges{position:absolute;top:.25rem;left:.25rem;right:.25rem;display:flex;flex-direction:column;align-items:flex-start;gap:.18rem;pointer-events:none;}
+.card .badge{display:inline-block;padding:.1rem .38rem;border-radius:6px;font-size:.62rem;font-weight:700;letter-spacing:.04em;color:#fff;line-height:1.25;pointer-events:auto;}
+.card .badge.v37new{background:#3a8a3a;}
+.card .badge.v37rename{background:#7a5cd1;}
+.card .badge.v37stat{background:#d2861a;}
+body[data-only-v37new="1"] .card:not(.is-v37new){display:none !important;}
 body[data-view="row"] .grid{grid-template-columns:1fr;gap:6px;}
 body[data-view="row"] .card{padding:.45rem .7rem;align-items:center;gap:.6rem;border-radius:8px;}
 body[data-view="row"] .card .img-wrap{flex:0 0 56px;height:56px;border-radius:6px;}
@@ -153,6 +161,9 @@ function L(){ return I18N[document.documentElement.dataset.lang==='en'?'en':'zh'
 <button id=hideimgless class=toggle>
  <span class=zh-only>🚫 隐藏无图(${noimg})</span><span class=en-only>🚫 Hide no-img (${noimg})</span>
 </button>
+<button id=onlyv37 class=toggle>
+ <span class=zh-only>✨ 仅 v3.7 新植物(${plants.filter(p=>p.v37_new).length})</span><span class=en-only>✨ Only v3.7 new (${plants.filter(p=>p.v37_new).length})</span>
+</button>
 <button id=lineart class=toggle>
  <span class=zh-only>🖋 线稿</span><span class=en-only>🖋 Line art</span>
 </button>
@@ -204,8 +215,17 @@ function L(){ return I18N[document.documentElement.dataset.lang==='en'?'en':'zh'
         if(c.length) stats=`<div class=stats>${c.join('')}</div>`;
       }
       const img = p.img ? `<img loading=lazy src="${esc(p.img)}" alt="${esc(p.enum)}">` : `<div class=no-img>${esc(t.noimg)}</div>`;
-      frags.push(`<div class="${cls}" data-s="${esc(search)}">
-<div class=img-wrap>${img}</div>
+      // v3.7 changelog badges
+      const badges = [];
+      if (p.v37_new) badges.push(`<span class="badge v37new" title="${en?'New in v3.7':'v3.7 新增'}">v3.7 NEW</span>`);
+      if (p.v37_renamed_from) badges.push(`<span class="badge v37rename" title="${en?'Renamed in v3.7':'v3.7 重命名'}">↻ ${esc(p.v37_renamed_from)}</span>`);
+      if (p.v37_stat_changes) {
+        const parts = Object.entries(p.v37_stat_changes).map(([k,v])=>`${k}:${v[0]}→${v[1]}`).join(' · ');
+        badges.push(`<span class="badge v37stat" title="${esc(parts)}">v3.7 调整</span>`);
+      }
+      const badgeHTML = badges.length ? `<div class=badges>${badges.join('')}</div>` : '';
+      frags.push(`<div class="${cls}${p.v37_new?' is-v37new':''}" data-s="${esc(search)}" id="p${p.seed}">
+<div class=img-wrap>${img}${badgeHTML}</div>
 <div class=body>
 <div class=name>${esc(nm)}<span class=en>${esc(sub)}</span></div>
 <div class=seed>${t.seed} #${p.seed}</div>
@@ -254,6 +274,19 @@ ${intro ? `<div class=intro>${intro}</div>` : ''}
   setView(savedView); setHide(savedHide==='1');
   document.querySelectorAll('.viewbtns button').forEach(b=>b.addEventListener('click', ()=>setView(b.dataset.v)));
   document.getElementById('hideimgless').addEventListener('click', ()=>setHide(document.body.dataset.hideimgless!=='1'));
+
+  // v3.7-only filter
+  const V37_KEY='pvzrh_almanac_only_v37';
+  function setOnlyV37(on){
+    document.body.dataset.onlyV37new = on?'1':'0';
+    document.body.setAttribute('data-only-v37new', on?'1':'0');
+    const b=document.getElementById('onlyv37'); if(b) b.classList.toggle('on', on);
+    try{ localStorage.setItem(V37_KEY, on?'1':'0'); }catch(e){}
+  }
+  let savedV37='0'; try{ savedV37=localStorage.getItem(V37_KEY)||'0'; }catch(e){}
+  setOnlyV37(savedV37==='1');
+  const onlyV37Btn = document.getElementById('onlyv37');
+  if (onlyV37Btn) onlyV37Btn.addEventListener('click', ()=>setOnlyV37(document.body.getAttribute('data-only-v37new')!=='1'));
 
   // line-art toggle
   const LINEART_KEY='pvzrh_almanac_lineart';

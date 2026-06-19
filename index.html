@@ -1,42 +1,108 @@
 <!DOCTYPE html><html lang=zh><head><meta charset=utf-8>
 <script>(function(){var d=document.documentElement;var t=null,l=null;try{t=localStorage.getItem('pvzrh_theme');l=localStorage.getItem('pvzrh_lang')}catch(e){}if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.dataset.theme=t;d.dataset.lang=l||'zh';})();</script>
-<title>PvZ RH 数据展示 / Data</title>
+<title>PvZ RH 数据展示 / Data · v3.7</title>
 <style>
-:root{ color-scheme:light dark; --bg:#f6f6f3;--card:#fff;--tx:#222;--sub:#888;--acc:#3a8a3a;}
-:root[data-theme="dark"]{--bg:#1a1a1c;--card:#2a2a2c;--tx:#eee;--sub:#aaa;--acc:#7ec97e;}
-body{margin:0;padding:2rem 1rem;background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;max-width:780px;margin-inline:auto;}
-h1{margin:0 0 .5rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1.2rem;}
-.cards a{background:var(--card);border-radius:14px;padding:1.1rem;text-decoration:none;color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.07);transition:transform .15s;}
-.cards a:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.12);}
-.cards .ic{font-size:2rem;}
-.cards .nm{font-weight:700;margin:.4rem 0 .15rem;}
-.cards .ds{color:var(--sub);font-size:.85rem;}
-.themebtn{padding:.4rem .65rem;border:1px solid #ccc;border-radius:8px;background:var(--card);color:var(--tx);cursor:pointer;font-size:.95rem;line-height:1;min-width:2.6rem;}
-:root[data-lang="en"] .zh-only,:root[data-lang="zh"] .en-only{display:none !important;}
+:root{ color-scheme:light dark; --bg:#f6f6f3;--card:#fff;--tx:#222;--sub:#888;--acc:#3a8a3a;--add:#2e8b46;--edit:#d2861a;--badge-bg:#3a8a3a;--badge-fg:#fff;}
+:root[data-theme="dark"]{--bg:#1a1a1c;--card:#2a2a2c;--tx:#eee;--sub:#aaa;--acc:#7ec97e;--add:#7ec97e;--edit:#f0b56b;--badge-bg:#3a8a3a;--badge-fg:#fff;}
+*,*::before,*::after{box-sizing:border-box;}
+body{margin:0;padding:1.75rem 1rem 4rem;background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;max-width:680px;margin-inline:auto;line-height:1.55;}
+h1{margin:0 0 .35rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;font-size:1.55rem;}
+h2{margin:0 0 .7rem;font-size:1.15rem;display:flex;align-items:center;gap:.5rem;}
+a{color:var(--acc);text-decoration:none;} a:hover{text-decoration:underline;}
+.sub,.subtitle{color:var(--sub);font-size:.9rem;}
 .btnbar{display:flex;gap:.4rem;}
+.themebtn{padding:.38rem .6rem;border:1px solid #ccc;border-radius:8px;background:var(--card);color:var(--tx);cursor:pointer;font-size:.92rem;line-height:1;min-width:2.5rem;}
+:root[data-lang="en"] .zh-only,:root[data-lang="zh"] .en-only{display:none !important;}
+
+/* single-column card stack */
+.stack{display:flex;flex-direction:column;gap:.85rem;margin-top:1.2rem;}
+.stack a.card{background:var(--card);border-radius:14px;padding:1.05rem 1.15rem;color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.07);display:flex;align-items:center;gap:1rem;transition:transform .15s,box-shadow .15s;}
+.stack a.card:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12);text-decoration:none;}
+.stack .ic{font-size:1.9rem;flex:0 0 auto;}
+.stack .body{flex:1;}
+.stack .nm{font-weight:700;font-size:1.05rem;margin-bottom:.15rem;}
+.stack .ds{color:var(--sub);font-size:.88rem;}
+.stack .chev{color:var(--sub);font-size:1.4rem;flex:0 0 auto;}
+
+/* v3.7 panel */
+.panel{background:var(--card);border-radius:14px;padding:1.1rem 1.2rem;margin-top:1.6rem;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+.panel .badge{display:inline-block;padding:.18rem .6rem;border-radius:999px;background:var(--badge-bg);color:var(--badge-fg);font-size:.8rem;font-weight:700;letter-spacing:.04em;}
+.summary{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 1rem;}
+.chip{padding:.22rem .55rem;border-radius:8px;font-size:.82rem;background:rgba(127,127,127,.13);}
+.chip.add{color:var(--add);}
+.chip.edit{color:var(--edit);}
+.panel details{margin:.45rem 0;border-top:1px solid rgba(127,127,127,.18);padding-top:.5rem;}
+.panel details:first-of-type{border-top:0;padding-top:0;}
+.panel summary{cursor:pointer;padding:.25rem 0;font-size:.96rem;}
+.panel ul{list-style:none;padding:0;margin:.4rem 0 .2rem;font-size:.88rem;}
+.panel ul li{padding:.18rem 0;color:var(--tx);}
+.panel ul.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.05rem .8rem;}
+@media (max-width:520px){ .panel ul.grid2{grid-template-columns:1fr;} }
+.panel code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8em;color:var(--sub);background:rgba(127,127,127,.1);padding:.05rem .35rem;border-radius:4px;margin-right:.3em;}
+.panel s{color:var(--sub);}
+.panel .foot{font-size:.82rem;color:var(--sub);margin:1rem 0 0;}
+.footer{color:var(--sub);font-size:.82rem;margin-top:2rem;}
 </style></head><body>
 <h1><span><span class=zh-only>🌿 PvZ Hybrid 数据展示</span><span class=en-only>🌿 PvZ Hybrid Data</span></span>
 <span class=btnbar>
 <button id=langtoggle class=themebtn title="Switch language / 切换语言"><span class=zh-only>EN</span><span class=en-only>中</span></button>
 <button id=themetoggle class=themebtn title="Toggle theme">🌓</button>
 </span></h1>
-<p style="color:var(--sub)">
-<span class=zh-only>从 <code>data.unity3d</code> + <code>GameAssembly.dll</code> + <code>il2cpp metadata</code> 提取整理</span>
-<span class=en-only>Extracted from <code>data.unity3d</code> + <code>GameAssembly.dll</code> + <code>il2cpp metadata</code></span>
+<p class=subtitle>
+<span class=zh-only>游戏版本 <b>v3.7</b> · 从 <code>data.unity3d</code> + <code>GameAssembly.dll</code> + <code>il2cpp metadata</code> 提取</span>
+<span class=en-only>Game build <b>v3.7</b> · extracted from <code>data.unity3d</code> + <code>GameAssembly.dll</code> + <code>il2cpp metadata</code></span>
 </p>
-<div class=cards>
-  <a href="plant_almanac_pro.html"><div class=ic>📖</div>
-   <div class=nm><span class=zh-only>真·植物图鉴</span><span class=en-only>Plant Almanac</span></div>
-   <div class=ds><span class=zh-only>589 株植物 · 名称/属性/简介/头像</span><span class=en-only>589 plants · names / stats / portraits</span></div></a>
-  <a href="plant_fusion.html"><div class=ic>🧬</div>
-   <div class=nm><span class=zh-only>进化路线图</span><span class=en-only>Evolution Routes</span></div>
-   <div class=ds><span class=zh-only>14 株底材 · 100 阶段</span><span class=en-only>14 base plants · 100 stages</span></div></a>
-  <a href="plant_fusion_full.html"><div class=ic>🔗</div>
-   <div class=nm><span class=zh-only>完整融合配方表</span><span class=en-only>Fusion Catalog</span></div>
-   <div class=ds><span class=zh-only>475 株植物 · 781 条配方</span><span class=en-only>475 plants · 781 recipes</span></div></a>
+
+<div class=stack>
+  <a class=card href="plant_almanac_pro.html"><div class=ic>📖</div>
+   <div class=body><div class=nm><span class=zh-only>真·植物图鉴</span><span class=en-only>Plant Almanac</span></div>
+   <div class=ds><span class=zh-only>645 株植物 · 名称 / 属性 / 简介 / 头像</span><span class=en-only>645 plants · names / stats / portraits</span></div></div>
+   <div class=chev>›</div></a>
+  <a class=card href="plant_fusion.html"><div class=ic>🧬</div>
+   <div class=body><div class=nm><span class=zh-only>进化路线图</span><span class=en-only>Evolution Routes</span></div>
+   <div class=ds><span class=zh-only>14 株底材 · 100 阶段</span><span class=en-only>14 base plants · 100 stages</span></div></div>
+   <div class=chev>›</div></a>
+  <a class=card href="plant_fusion_full.html"><div class=ic>🔗</div>
+   <div class=body><div class=nm><span class=zh-only>完整融合配方表</span><span class=en-only>Fusion Catalog</span></div>
+   <div class=ds><span class=zh-only>520 株植物 · 配方索引</span><span class=en-only>520 plants · recipe index</span></div></div>
+   <div class=chev>›</div></a>
 </div>
-<p style="color:var(--sub);font-size:.85rem;margin-top:2rem">
+
+
+<section class=panel id=changelog>
+  <h2><span class=badge>v3.7</span><span class=zh-only> 较 v3.5 数据更新</span><span class=en-only> changes since v3.5</span></h2>
+  <div class=summary>
+    <span class="chip add">+55 <span class=zh-only>植物</span><span class=en-only>plants</span></span>
+    <span class="chip add">+18 <span class=zh-only>僵尸</span><span class=en-only>zombies</span></span>
+    <span class="chip add">+103 <span class=zh-only>融合配方</span><span class=en-only>recipes</span></span>
+    <span class="chip edit">8 <span class=zh-only>属性调整</span><span class=en-only>stat tweaks</span></span>
+    <span class="chip edit">11 <span class=zh-only>重命名</span><span class=en-only>renames</span></span>
+  </div>
+
+  <details open><summary><b><span class=zh-only>新增植物</span><span class=en-only>New plants</span></b> · 55</summary>
+    <ul class=grid2><li><a href="plant_almanac_pro.html#p40"><code>#40</code> 雪棘草</a></li><li><a href="plant_almanac_pro.html#p217"><code>#217</code> 全息黑曜石高坚果</a></li><li><a href="plant_almanac_pro.html#p218"><code>#218</code> 多肉熊掌</a></li><li><a href="plant_almanac_pro.html#p219"><code>#219</code> 指向标</a></li><li><a href="plant_almanac_pro.html#p306"><code>#306</code> 究极影蚀大喷菇</a></li><li><a href="plant_almanac_pro.html#p307"><code>#307</code> 原始阳光帝果</a></li><li><a href="plant_almanac_pro.html#p308"><code>#308</code> 究极不朽高坚果</a></li><li><a href="plant_almanac_pro.html#p985"><code>#985</code> 究极黑橄榄机枪射手</a></li><li><a href="plant_almanac_pro.html#p986"><code>#986</code> 究极超时空狙击射手</a></li><li><a href="plant_almanac_pro.html#p987"><code>#987</code> 究极寒冰小喷菇</a></li><li><a href="plant_almanac_pro.html#p988"><code>#988</code> 究极阳光小喷菇</a></li><li><a href="plant_almanac_pro.html#p989"><code>#989</code> 究极影蚀射手</a></li><li><a href="plant_almanac_pro.html#p990"><code>#990</code> 究极黑曜石小辣椒菇</a></li><li><a href="plant_almanac_pro.html#p991"><code>#991</code> 究极火神黏黏菇</a></li><li><a href="plant_almanac_pro.html#p992"><code>#992</code> 冷寂寒冰菇</a></li><li><a href="plant_almanac_pro.html#p993"><code>#993</code> 魔法猫娘·炫彩[水]</a></li><li><a href="plant_almanac_pro.html#p994"><code>#994</code> 魔法猫娘·炫彩[陆]</a></li><li><a href="plant_almanac_pro.html#p995"><code>#995</code> 寂灭寒冰菇</a></li><li><a href="plant_almanac_pro.html#p1391"><code>#1391</code> 蒜毒树桩</a></li><li><a href="plant_almanac_pro.html#p1392"><code>#1392</code> 海窝瓜</a></li><li><a href="plant_almanac_pro.html#p1393"><code>#1393</code> 仙人掌大喷菇</a></li><li><a href="plant_almanac_pro.html#p1394"><code>#1394</code> 魅惑火炬树桩</a></li><li><a href="plant_almanac_pro.html#p1395"><code>#1395</code> 水草大蘑菇</a></li><li><a href="plant_almanac_pro.html#p1396"><code>#1396</code> 大喷菇扩散群</a></li><li><a href="plant_almanac_pro.html#p1397"><code>#1397</code> 胆小菇扩散群</a></li><li><a href="plant_almanac_pro.html#p1398"><code>#1398</code> 火爆卷心菜投手</a></li><li><a href="plant_almanac_pro.html#p1399"><code>#1399</code> 毁灭卷心菜投手</a></li><li><a href="plant_almanac_pro.html#p1400"><code>#1400</code> 火爆玉米投手</a></li><li><a href="plant_almanac_pro.html#p1401"><code>#1401</code> 寒冰土豆雷</a></li><li><a href="plant_almanac_pro.html#p1402"><code>#1402</code> 雪棘冬笋路障</a></li><li><a href="plant_almanac_pro.html#p1403"><code>#1403</code> 雪棘莲花</a></li><li><a href="plant_almanac_pro.html#p1404"><code>#1404</code> 豌豆花盆</a></li><li><a href="plant_almanac_pro.html#p1405"><code>#1405</code> 狙击花盆</a></li><li><a href="plant_almanac_pro.html#p1406"><code>#1406</code> 雪棘云杉</a></li><li><a href="plant_almanac_pro.html#p1407"><code>#1407</code> 超级机枪南瓜</a></li><li><a href="plant_almanac_pro.html#p1408"><code>#1408</code> 毁灭西瓜投手</a></li><li><a href="plant_almanac_pro.html#p1409"><code>#1409</code> 雪棘芦荟</a></li><li><a href="plant_almanac_pro.html#p1410"><code>#1410</code> 南瓜箱子</a></li><li><a href="plant_almanac_pro.html#p1411"><code>#1411</code> 毁灭玉米投手</a></li><li><a href="plant_almanac_pro.html#p1412"><code>#1412</code> 杨桃豌豆射手</a></li><li><a href="plant_almanac_pro.html#p1413"><code>#1413</code> 火爆南瓜</a></li><li><a href="plant_almanac_pro.html#p1414"><code>#1414</code> 毁灭水草</a></li><li><a href="plant_almanac_pro.html#p1415"><code>#1415</code> 仙人掌地刺</a></li><li><a href="plant_almanac_pro.html#p1416"><code>#1416</code> 雪棘钢叶草</a></li><li><a href="plant_almanac_pro.html#p1417"><code>#1417</code> 卷心菜地刺</a></li><li><a href="plant_almanac_pro.html#p1418"><code>#1418</code> 西瓜地刺</a></li><li><a href="plant_almanac_pro.html#p1419"><code>#1419</code> 阳光地刺</a></li><li><a href="plant_almanac_pro.html#p1420"><code>#1420</code> 飓风三叶草</a></li><li><a href="plant_almanac_pro.html#p1421"><code>#1421</code> 火炬土豆雷</a></li><li><a href="plant_almanac_pro.html#p1422"><code>#1422</code> 焰光土豆雷</a></li><li><a href="plant_almanac_pro.html#p1423"><code>#1423</code> 坚果超级机枪射手</a></li><li><a href="plant_almanac_pro.html#p1424"><code>#1424</code> 大嘴狙击射手</a></li><li><a href="plant_almanac_pro.html#p1425"><code>#1425</code> 豌豆胆小菇</a></li><li><a href="plant_almanac_pro.html#p1426"><code>#1426</code> 三叶土豆</a></li><li><a href="plant_almanac_pro.html#p3000"><code>#3000</code> 占位符</a></li></ul>
+  </details>
+
+  <details><summary><b><span class=zh-only>新增僵尸</span><span class=en-only>New zombies</span></b> · 18</summary>
+    <ul class=grid2><li><code>#81</code> 撑杆教练僵尸</li><li><code>#82</code> 铁桶读报僵尸</li><li><code>#83</code> 僵尸企鹅</li><li><code>#84</code> 雪原僵尸</li><li><code>#85</code> 蓝冰僵尸</li><li><code>#86</code> 僵尸帝王企鹅</li><li><code>#87</code> 复合路障僵尸</li><li><code>#88</code> 僵尸巨象</li><li><code>#130</code> 机枪射手僵尸</li><li><code>#131</code> 寒冰机枪射手僵尸</li><li><code>#248</code> 黑曜石雪爪僵尸</li><li><code>#249</code> 究极古鲸骑士</li><li><code>#250</code> 超时空气球僵尸</li><li><code>#251</code> 黑橄榄骑兵僵尸</li><li><code>#252</code> 机枪黑橄榄骑兵团长</li><li><code>#253</code> 黑袍小丑王</li><li><code>#254</code> 黑橄榄巨象</li><li><code>#255</code> 机枪黑橄榄兵车</li></ul>
+  </details>
+
+  <details><summary><b><span class=zh-only>属性调整</span><span class=en-only>Stat tweaks</span></b> · 8</summary>
+    <ul><li><a href="plant_almanac_pro.html#p908"><code>#908</code> 寒冰机枪小喷菇</a> &nbsp;<span class=sub>cost: <s>100</s>→<b>125</b></span></li><li><a href="plant_almanac_pro.html#p911"><code>#911</code> 究极激光南瓜</a> &nbsp;<span class=sub>damage: <s>0</s>→<b>200</b></span></li><li><a href="plant_almanac_pro.html#p927"><code>#927</code> 究极机枪炮台</a> &nbsp;<span class=sub>damage: <s>120</s>→<b>80</b></span></li><li><a href="plant_almanac_pro.html#p929"><code>#929</code> 阳光机枪小喷菇</a> &nbsp;<span class=sub>cost: <s>200</s>→<b>125</b></span></li><li><a href="plant_almanac_pro.html#p942"><code>#942</code> 铁豆小队</a> &nbsp;<span class=sub>cost: <s>300</s>→<b>475</b></span></li><li><a href="plant_almanac_pro.html#p961"><code>#961</code> 铁豆突击队</a> &nbsp;<span class=sub>cost: <s>300</s>→<b>475</b></span></li><li><a href="plant_almanac_pro.html#p984"><code>#984</code> 究极流光射手</a> &nbsp;<span class=sub>cooldown: <s>7.5</s>→<b>90</b></span></li><li><a href="plant_almanac_pro.html#p1152"><code>#1152</code> 铁豆小喷菇</a> &nbsp;<span class=sub>cost: <s>200</s>→<b>125</b></span></li></ul>
+  </details>
+
+  <details><summary><b><span class=zh-only>重命名</span><span class=en-only>Renames</span></b> · 11</summary>
+    <ul>
+      <li><code>#983</code> <s>死神土豆地雷</s> → <b>死神土豆雷</b></li><li><code>#1049</code> <s>火爆缠绕水草</s> → <b>火爆水草</b></li><li><code>#1178</code> <s>樱桃树桩</s> → <b>樱桃火炬树桩</b></li><li><code>#1272</code> <s>死神狙击射手</s> → <b>死神猎手</b></li>
+      <li><code>#29</code> <s>铁桶气球僵尸</s> → <b>铁桶坚果气球僵尸</b></li><li><code>#56</code> <s>雪兽僵尸</s> → <b>雪兽</b></li><li><code>#106</code> <s>铁坚果僵尸</s> → <b>铁桶坚果僵尸</b></li><li><code>#108</code> <s>铁豌豆射手僵尸</s> → <b>铁桶豌豆僵尸</b></li><li><code>#114</code> <s>武装铁豌豆射手僵尸</s> → <b>武装铁桶豌豆僵尸</b></li><li><code>#119</code> <s>铁豌豆气球僵尸</s> → <b>铁桶豌豆气球僵尸</b></li><li><code>#227</code> <s>寒冰高坚果雪爪僵尸</s> → <b>雪爪僵尸</b></li>
+    </ul>
+  </details>
+
+  <p class=foot><span class=zh-only>详细分布见 <a href="data/changelog.json"><code>data/changelog.json</code></a>。融合配方(+103)见 <a href="plant_fusion_full.html#v37">完整融合表</a>。</span>
+  <span class=en-only>See <a href="data/changelog.json"><code>data/changelog.json</code></a> for the full diff. Recipe additions (+103) are listed in the <a href="plant_fusion_full.html#v37">fusion catalog</a>.</span></p>
+</section>
+
+<p class=footer>
 <span class=zh-only>数据 <code>data/*.json</code> 与图片 <code>images/</code> 完全本地化,直接 <code>cp -r public/ &lt;target&gt;</code> 即可迁移。</span>
 <span class=en-only>Data <code>data/*.json</code> + images <code>images/</code> are fully self-contained — copy <code>public/</code> anywhere to deploy.</span>
 </p>
