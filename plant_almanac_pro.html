@@ -70,6 +70,18 @@ body[data-view="mini"] .card .name{font-size:.8rem;margin:0;font-weight:600;}
 body[data-view="mini"] .card .name .en{display:block;margin-left:0;font-size:.68rem;font-weight:400;}
 body[data-view="mini"] .card .seed,body[data-view="mini"] .card .stats,body[data-view="mini"] .card .cost,body[data-view="mini"] .card .info,body[data-view="mini"] .card .intro{display:none;}
 
+/* ====== multi-select mode (mini view) ====== */
+.card .selbox{position:absolute;top:.25rem;right:.25rem;display:none;cursor:pointer;
+  background:rgba(255,255,255,.85);border-radius:6px;padding:1px 3px;line-height:0;
+  box-shadow:0 1px 3px rgba(0,0,0,.18);z-index:5;}
+:root[data-theme="dark"] .card .selbox{background:rgba(40,40,40,.85);}
+.card .selbox input{margin:0;width:16px;height:16px;cursor:pointer;pointer-events:none;}
+body.selectmode .card .selbox{display:inline-flex;}
+body.selectmode .card{cursor:pointer;user-select:none;}
+body.selectmode .card.checked{outline:2px solid var(--acc);outline-offset:-2px;}
+body[data-view="mini"].selectmode .card .img-wrap{padding-top:2px;}
+.selcount{font-weight:700;color:var(--acc);}
+
 /* ====== line-art mode — SVG filter on every plant image ====== */
 body.lineart .card img{filter:url(#pvzrh-lineart);}
 /* html2canvas (v1.4) ignores filter:url() so PNG export uses a runtime
@@ -164,6 +176,15 @@ function L(){ return I18N[document.documentElement.dataset.lang==='en'?'en':'zh'
 <button id=onlyv37 class=toggle>
  <span class=zh-only>✨ 仅 v3.7 新植物(${plants.filter(p=>p.v37_new).length})</span><span class=en-only>✨ Only v3.7 new (${plants.filter(p=>p.v37_new).length})</span>
 </button>
+<button id=selectmode class=toggle>
+ <span class=zh-only>☑ 多选模式</span><span class=en-only>☑ Select mode</span>
+</button>
+<button id=copysel class=toggle style="display:none">
+ <span class=zh-only>📋 复制 EN 名(<span class=selcount>0</span>)</span><span class=en-only>📋 Copy EN names (<span class=selcount>0</span>)</span>
+</button>
+<button id=clearsel class=toggle style="display:none">
+ <span class=zh-only>✗ 清空</span><span class=en-only>✗ Clear</span>
+</button>
 <button id=lineart class=toggle>
  <span class=zh-only>🖋 线稿</span><span class=en-only>🖋 Line art</span>
 </button>
@@ -224,8 +245,10 @@ function L(){ return I18N[document.documentElement.dataset.lang==='en'?'en':'zh'
         badges.push(`<span class="badge v37stat" title="${esc(parts)}">v3.7 调整</span>`);
       }
       const badgeHTML = badges.length ? `<div class=badges>${badges.join('')}</div>` : '';
-      frags.push(`<div class="${cls}${p.v37_new?' is-v37new':''}" data-s="${esc(search)}" id="p${p.seed}">
-<div class=img-wrap>${img}${badgeHTML}</div>
+      // selection checkbox — only visible in select-mode; clicks bubble to card-level handler
+      const selBox = `<label class=selbox><input type=checkbox data-en="${esc(p.enum||'')}" data-seed="${p.seed}" data-zh="${esc(p.name_zh||'')}"></label>`;
+      frags.push(`<div class="${cls}${p.v37_new?' is-v37new':''}" data-s="${esc(search)}" data-en="${esc(p.enum||'')}" data-seed="${p.seed}" id="p${p.seed}">
+<div class=img-wrap>${img}${badgeHTML}${selBox}</div>
 <div class=body>
 <div class=name>${esc(nm)}<span class=en>${esc(sub)}</span></div>
 <div class=seed>${t.seed} #${p.seed}</div>
@@ -248,6 +271,8 @@ ${intro ? `<div class=intro>${intro}</div>` : ''}
     buildCards();
     // re-apply current search filter
     qEl.dispatchEvent(new Event('input'));
+    // re-apply selected highlight (cards were re-rendered)
+    if (typeof applySelToCards==='function') applySelToCards();
   }
   applyLang();
   window.addEventListener('pvzrh:langchange', applyLang);
@@ -287,6 +312,78 @@ ${intro ? `<div class=intro>${intro}</div>` : ''}
   setOnlyV37(savedV37==='1');
   const onlyV37Btn = document.getElementById('onlyv37');
   if (onlyV37Btn) onlyV37Btn.addEventListener('click', ()=>setOnlyV37(document.body.getAttribute('data-only-v37new')!=='1'));
+
+  // ====== multi-select mode ======
+  const SEL_KEY='pvzrh_almanac_sel';
+  const selected = new Set();   // set of "<seed>" strings (stable id)
+  try{ JSON.parse(localStorage.getItem(SEL_KEY)||'[]').forEach(s=>selected.add(String(s))); }catch(e){}
+  function persistSel(){ try{ localStorage.setItem(SEL_KEY, JSON.stringify([...selected])); }catch(e){} }
+  function refreshSelCount(){
+    const n = selected.size;
+    document.querySelectorAll('.selcount').forEach(s=>s.textContent=n);
+    const copyBtn = document.getElementById('copysel');
+    const clearBtn = document.getElementById('clearsel');
+    if (copyBtn) copyBtn.style.display = n ? '' : 'none';
+    if (clearBtn) clearBtn.style.display = n ? '' : 'none';
+  }
+  function applySelToCards(){
+    // sync visual `checked` class + checkbox state from the `selected` set
+    document.querySelectorAll('.card').forEach(card=>{
+      const seed = card.dataset.seed;
+      const on = selected.has(seed);
+      card.classList.toggle('checked', on);
+      const cb = card.querySelector('.selbox input');
+      if (cb) cb.checked = on;
+    });
+    refreshSelCount();
+  }
+  function setSelectMode(on){
+    document.body.classList.toggle('selectmode', on);
+    const b = document.getElementById('selectmode');
+    if (b) b.classList.toggle('on', on);
+    applySelToCards();
+  }
+  // delegated click on grid — toggle selection when clicking card (in select mode)
+  grid.addEventListener('click', e=>{
+    if (!document.body.classList.contains('selectmode')) return;
+    const card = e.target.closest('.card');
+    if (!card) return;
+    e.preventDefault();
+    const seed = card.dataset.seed;
+    if (selected.has(seed)) selected.delete(seed); else selected.add(seed);
+    persistSel();
+    applySelToCards();
+  });
+  document.getElementById('selectmode').addEventListener('click', ()=>
+    setSelectMode(!document.body.classList.contains('selectmode'))
+  );
+  document.getElementById('copysel').addEventListener('click', async ()=>{
+    const lines = [];
+    plants.forEach(p=>{
+      if (selected.has(String(p.seed))) {
+        // EN first, then zh in comment for context
+        const en = p.enum || ('#'+p.seed);
+        const zh = p.name_zh ? `  # ${p.name_zh}` : '';
+        lines.push(`${en}${zh}`);
+      }
+    });
+    const txt = lines.join('\n');
+    try {
+      await navigator.clipboard.writeText(txt);
+      const btn = document.getElementById('copysel');
+      const orig = btn.innerHTML;
+      btn.innerHTML = '<span class=zh-only>✓ 已复制</span><span class=en-only>✓ Copied</span>';
+      setTimeout(()=>{ btn.innerHTML = orig; refreshSelCount(); }, 1200);
+    } catch(err) {
+      // fallback for non-secure contexts: prompt
+      window.prompt('Copy these names:', txt);
+    }
+  });
+  document.getElementById('clearsel').addEventListener('click', ()=>{
+    selected.clear(); persistSel(); applySelToCards();
+  });
+  // initial sync (selected may have entries from a prior session)
+  applySelToCards();
 
   // line-art toggle
   const LINEART_KEY='pvzrh_almanac_lineart';
