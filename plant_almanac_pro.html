@@ -1,6 +1,10 @@
 <!DOCTYPE html><html lang=zh><head><meta charset=utf-8>
 <script>(function(){var d=document.documentElement;var t=null,l=null;try{t=localStorage.getItem('pvzrh_theme');l=localStorage.getItem('pvzrh_lang')}catch(e){}if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.dataset.theme=t;d.dataset.lang=l||'zh';})();</script>
 <meta name=viewport content="width=device-width,initial-scale=1">
+<link rel=icon type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel=icon type="image/png" sizes="192x192" href="favicon-192.png">
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="favicon-192.png">
 <title>PvZ RH Plant Almanac · PvZ RH 真·植物图鉴</title>
 <style>
 :root{ color-scheme:light dark; --bg:#f6f6f3;--card:#fff;--tx:#222;--sub:#888;--acc:#3a8a3a;--cost:#c33;--in:#fdf6e6;--out:#e6f5fb;--evo:#f0e6f9;--route:#e6f5e6;--route2:#fef6e6;--arrow:#bbb;}
@@ -265,6 +269,11 @@ ${intro ? `<div class=intro>${intro}</div>` : ''}
 
   // search placeholder (the only thing we have to manage in JS — buttons use zh-only/en-only spans)
   const qEl = document.getElementById('q');
+  // Multi-select state — declared early so applyLang's applySelToCards()
+  // call doesn't hit a TDZ on the first run.
+  const SEL_KEY='pvzrh_almanac_sel';
+  const selected = new Set();
+  try{ JSON.parse(localStorage.getItem(SEL_KEY)||'[]').forEach(s=>selected.add(String(s))); }catch(e){}
   function applyLang(){
     refreshMeta();
     qEl.placeholder = L().ph;
@@ -272,7 +281,7 @@ ${intro ? `<div class=intro>${intro}</div>` : ''}
     // re-apply current search filter
     qEl.dispatchEvent(new Event('input'));
     // re-apply selected highlight (cards were re-rendered)
-    if (typeof applySelToCards==='function') applySelToCards();
+    try { applySelToCards(); } catch(e) {}
   }
   applyLang();
   window.addEventListener('pvzrh:langchange', applyLang);
@@ -313,10 +322,7 @@ ${intro ? `<div class=intro>${intro}</div>` : ''}
   const onlyV37Btn = document.getElementById('onlyv37');
   if (onlyV37Btn) onlyV37Btn.addEventListener('click', ()=>setOnlyV37(document.body.getAttribute('data-only-v37new')!=='1'));
 
-  // ====== multi-select mode ======
-  const SEL_KEY='pvzrh_almanac_sel';
-  const selected = new Set();   // set of "<seed>" strings (stable id)
-  try{ JSON.parse(localStorage.getItem(SEL_KEY)||'[]').forEach(s=>selected.add(String(s))); }catch(e){}
+  // ====== multi-select mode (state declared earlier near applyLang) ======
   function persistSel(){ try{ localStorage.setItem(SEL_KEY, JSON.stringify([...selected])); }catch(e){} }
   function refreshSelCount(){
     const n = selected.size;
@@ -569,7 +575,12 @@ ${intro ? `<div class=intro>${intro}</div>` : ''}
   });
 
  } catch(e) {
-  document.getElementById('root').innerHTML='<div style="color:#c33">加载 data/plants.js 失败:'+esc(e.message)+'</div>';
+  console.error('plant_almanac_pro init error:', e);
+  const r = document.getElementById('root') || document.body;
+  const div = document.createElement('div');
+  div.style.cssText = 'color:#c33;padding:1rem;font-family:monospace;font-size:.85rem;';
+  div.textContent = '加载/渲染失败: '+(e && e.message || String(e));
+  r.appendChild(div);
  }
 })();
 </script>
