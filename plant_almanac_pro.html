@@ -214,8 +214,7 @@ function L(){ return I18N[document.documentElement.dataset.lang==='en'?'en':'zh'
         if(p.stats.produce_interval && !['0','0.0'].includes(p.stats.produce_interval)) c.push(`<span>${t.sun}:</span><b>${esc(p.stats.produce_interval)}s</b>`);
         if(c.length) stats=`<div class=stats>${c.join('')}</div>`;
       }
-      const noImgTxt = p.v37_art_pending ? (en?'v3.7 art pending':'v3.7 美术待补') : t.noimg;
-      const img = p.img ? `<img loading=lazy src="${esc(p.img)}" alt="${esc(p.enum)}">` : `<div class=no-img>${esc(noImgTxt)}</div>`;
+      const img = p.img ? `<img loading=lazy src="${esc(p.img)}" alt="${esc(p.enum)}">` : `<div class=no-img>${esc(t.noimg)}</div>`;
       // v3.7 changelog badges
       const badges = [];
       if (p.v37_new) badges.push(`<span class="badge v37new" title="${en?'New in v3.7':'v3.7 新增'}">v3.7 NEW</span>`);
